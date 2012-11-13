@@ -54,10 +54,10 @@ window.onload = function() {
           var maxDimension = $(window).width() > $(window).height() ? "width" : "height";
           if (maxDimension == "width") {
               maxDimension = $(window).width();
-            image.css("top", ((image.height() - $(window).height())/2)+"px");
+              image.css("top", ((image.height() - $(window).height())/2)+"px");
           } else {
               maxDimension = $(window).height();
-            image.css("left", ((image.width() - $(window).width())/2)+"px");
+              image.css("left", (($(window).width() - image.width())/2)+"px");
           }
           image.attr("width", maxDimension);
           image.attr("height", maxDimension);
