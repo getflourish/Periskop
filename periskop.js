@@ -4,17 +4,21 @@ window.onload = function() {
       init: function () {
           if (navigator.geolocation) {
               navigator.geolocation.watchPosition(Periskop.update)
+              Periskop.debug("Watching");
           } else {
+              Periskop.debug("No Geolocation possible. Please enable GPS and WIFI settings.");
               console.log("No Geolocation possible. Please enable GPS and WIFI settings.");
           }
           
           if (window.DeviceOrientationEvent) {
-              window.addEventListener('deviceorientation', onDeviceOrientation, false);
-              Periskop.debug("Device Orientation supported");
+              window.addEventListener('deviceorientation', Periskop.onDeviceOrientation, false);
           } else {
-              Periskop.debug("Device Orientation not supported");
               console.log("Device Orientation not supported.");
           }
+          
+          $("#streetview").bind("click", function () {
+              Periskop.loadStreetViewImage(42.345573,-71.098326, 90, -Periskop.orientation.alpha, 0);
+          });
       },
       debug: function (message) {
           $("#debug-message").html(message);
@@ -22,7 +26,7 @@ window.onload = function() {
       getTimeStamp: function () {
           return new Date().getTime();
       },
-      loadStreetViewImage: function (latitude, longitude) {
+      loadStreetViewImage: function (latitude, longitude, fov, heading, pitch) {
           fov = typeof fov !== 'undefined' ? fov : 90;
           heading = typeof heading !== 'undefined' ? heading : 0;
           pitch = typeof pitch !== 'undefined' ? pitch : 0;
@@ -70,15 +74,16 @@ window.onload = function() {
           }
       },
       onDeviceOrientation: function (event) {
-          // Periskop.debug(event.alpha);
+          Periskop.orientation = event;
       },
+      orientation: {},
       update: function (position) {
           position = position.coords;
           // Periskop.loadStreetViewImage(position.latitude, position.longitude);
-          Periskop.loadStreetViewImage(42.345573,-71.098326);
+          Periskop.loadStreetViewImage(42.345573,-71.098326, 90, Periskop.orientation.alpha, 0);
           // Debug
           time = Periskop.getTimeStamp();
-          // Periskop.debug(time + " // " + position.latitude + ", " + position.longitude);
+          Periskop.debug(time + " // " + position.latitude + ", " + position.longitude);
       }
   };
   Periskop.init();
