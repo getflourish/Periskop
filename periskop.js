@@ -80,7 +80,7 @@ window.onload = function() {
       update: function (position) {
           position = position.coords;
           // Periskop.loadStreetViewImage(position.latitude, position.longitude);
-          Periskop.loadStreetViewImage(42.345573,-71.098326, 90, Periskop.orientation.alpha, 0);
+          Periskop.loadStreetViewImage(42.345573,-71.098326, 90, -Periskop.orientation.alpha, 0);
           // Debug
           time = Periskop.getTimeStamp();
           Periskop.debug(time + " // " + position.latitude + ", " + position.longitude);
