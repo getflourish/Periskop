@@ -7,6 +7,14 @@ window.onload = function() {
           } else {
               console.log("No Geolocation possible. Please enable GPS and WIFI settings.");
           }
+          
+          if (window.DeviceOrientationEvent) {
+              window.addEventListener('deviceorientation', onDeviceOrientation, false);
+              Periskop.debug("Device Orientation supported");
+          } else {
+              Periskop.debug("Device Orientation not supported");
+              console.log("Device Orientation not supported.");
+          }
       },
       debug: function (message) {
           $("#debug-message").html(message);
@@ -61,13 +69,16 @@ window.onload = function() {
               }
           }
       },
+      onDeviceOrientation: function (event) {
+          // Periskop.debug(event.alpha);
+      },
       update: function (position) {
           position = position.coords;
           // Periskop.loadStreetViewImage(position.latitude, position.longitude);
           Periskop.loadStreetViewImage(42.345573,-71.098326);
           // Debug
           time = Periskop.getTimeStamp();
-          Periskop.debug(time + " // " + position.latitude + ", " + position.longitude);
+          // Periskop.debug(time + " // " + position.latitude + ", " + position.longitude);
       }
   };
   Periskop.init();
