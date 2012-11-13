@@ -54,13 +54,15 @@ window.onload = function() {
           var maxDimension = $(window).width() > $(window).height() ? "width" : "height";
           if (maxDimension == "width") {
               maxDimension = $(window).width();
+              image.attr("width", maxDimension);
+              image.attr("height", maxDimension);
               image.css("top", ((image.height() - $(window).height())/2)+"px");
           } else {
               maxDimension = $(window).height();
+              image.attr("width", maxDimension);
+              image.attr("height", maxDimension);
               image.css("left", (($(window).width() - image.width())/2)+"px");
           }
-          image.attr("width", maxDimension);
-          image.attr("height", maxDimension);
       },
       showLatestImage: function () {
           var done = false;
