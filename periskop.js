@@ -1,12 +1,12 @@
 window.onload = function() {
   window.Periskop = {
       images: [],
+      lastPosition: {},
+      orientation: {},
       init: function () {
           if (navigator.geolocation) {
               navigator.geolocation.watchPosition(Periskop.update)
-              Periskop.debug("Watching");
           } else {
-              Periskop.debug("No Geolocation possible. Please enable GPS and WIFI settings.");
               console.log("No Geolocation possible. Please enable GPS and WIFI settings.");
           }
           
@@ -16,14 +16,9 @@ window.onload = function() {
               console.log("Device Orientation not supported.");
           }
           
-          $("#streetview").bind("click", function () {
-              Periskop.loadStreetViewImage(42.345573,-71.098326, 90, -Periskop.orientation.alpha, 0);
-          });
-          
           window.onorientationchange = function () {
               Periskop.scaleImage();
           }
-          
       },
       debug: function (message) {
           $("#debug-message").html(message);
@@ -50,19 +45,20 @@ window.onload = function() {
           } else if (!image) {
               return;
           }
-          
-          var maxDimension = $(window).width() > $(window).height() ? "width" : "height";
-          if (maxDimension == "width") {
-              maxDimension = $(window).width();
-              image.attr("width", maxDimension);
-              image.attr("height", maxDimension);
-              image.css("top", ((image.height() - $(window).height())/2)+"px");
-          } else {
-              maxDimension = $(window).height();
-              image.attr("width", maxDimension);
-              image.attr("height", maxDimension);
-              image.css("left", (($(window).width() - image.width())/2)+"px");
-          }
+          switch (window.orientation) {
+              case 90:
+              case -90:
+                  maxDimension = $(window).width();
+                  break;
+              case 0:
+              case 180:
+                  maxDimension = $(window).height();
+              break;
+          }    
+          image.attr("width", maxDimension);
+          image.attr("height", maxDimension);
+          image.css("top", (($(window).height() - image.height())/2)+"px");              
+          image.css("left", (($(window).width() - image.width())/2)+"px");
       },
       showLatestImage: function () {
           var done = false;
@@ -86,11 +82,11 @@ window.onload = function() {
                           scale: 2
                       },
                       {
-                          complete: function (event) {
-                              // alle vorigen Bilder löschen
-                              oldImage.remove();
-                              Periskop.images.splice(0, i+1);
-                          }
+                      complete: function (event) {
+                          // alle vorigen Bilder löschen
+                          oldImage.remove();
+                          Periskop.images.splice(0, i+1);
+                        }
                       }
                   );
               } else {
@@ -102,15 +98,15 @@ window.onload = function() {
       },
       onDeviceOrientation: function (event) {
           Periskop.orientation = event;
+          // throttle
+          if (Periskop.getTimeStamp() - Periskop.lastUpdate > 1000) {
+              Periskop.update(lastPosition); 
+          }
       },
-      orientation: {},
       update: function (position) {
+          lastPosition = position;
           position = position.coords;
-          // Periskop.loadStreetViewImage(position.latitude, position.longitude);
-          Periskop.loadStreetViewImage(42.345573,-71.098326, 90, Periskop.orientation.alpha, 0);
-          // Debug
-          time = Periskop.getTimeStamp();
-          Periskop.debug(time + " // " + position.latitude + ", " + position.longitude);
+          Periskop.loadStreetViewImage(position.latitude, position.longitude, 90, 180-Periskop.orientation.alpha, 0);
       }
   };
   Periskop.init();
