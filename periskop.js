@@ -19,6 +19,11 @@ window.onload = function() {
           $("#streetview").bind("click", function () {
               Periskop.loadStreetViewImage(42.345573,-71.098326, 90, -Periskop.orientation.alpha, 0);
           });
+          
+          window.onorientationchange = function () {
+              Periskop.scaleImage();
+          }
+          
       },
       debug: function (message) {
           $("#debug-message").html(message);
@@ -39,6 +44,24 @@ window.onload = function() {
           };
           image.src = "http://maps.googleapis.com/maps/api/streetview?size=640x640&location="+ latitude + ",%20" + longitude + "&fov=" + fov + "&heading=" + heading + "&pitch=" + pitch + "&sensor=true";
       },
+      scaleImage: function (image) {
+          if (!image && $("#streetview").children().size()) {
+              image = $("#streetview").children().first();
+          } else if (!image) {
+              return;
+          }
+          
+          var maxDimension = $(window).width() > $(window).height() ? "width" : "height";
+          if (maxDimension == "width") {
+              maxDimension = $(window).width();
+            image.css("top", ((image.height() - $(window).height())/2)+"px");
+          } else {
+              maxDimension = $(window).height();
+            image.css("left", ((image.width() - $(window).width())/2)+"px");
+          }
+          image.attr("width", maxDimension);
+          image.attr("height", maxDimension);
+      },
       showLatestImage: function () {
           var done = false;
           for (var i = Periskop.images.length - 1; i >= 0; i--) {
@@ -48,11 +71,13 @@ window.onload = function() {
               }
           };
           if (done) {
-              $("#streetview").append(Periskop.images[done]);
+              var currentImage = $(Periskop.images[done]);
+              $("#streetview").append(currentImage);
+              Periskop.scaleImage(currentImage);
+              
               // is there an old image that needs removing?
               if ($("#streetview").children().size() > 1) {
                   var oldImage = $("#streetview").children().first();
-                  console.dir(oldImage);
                   oldImage.animate(
                       {
                           opacity: 0,
@@ -80,7 +105,7 @@ window.onload = function() {
       update: function (position) {
           position = position.coords;
           // Periskop.loadStreetViewImage(position.latitude, position.longitude);
-          Periskop.loadStreetViewImage(42.345573,-71.098326, 90, -Periskop.orientation.alpha, 0);
+          Periskop.loadStreetViewImage(42.345573,-71.098326, 90, Periskop.orientation.alpha, 0);
           // Debug
           time = Periskop.getTimeStamp();
           Periskop.debug(time + " // " + position.latitude + ", " + position.longitude);
