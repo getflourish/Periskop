@@ -8,7 +8,7 @@ window.onload = function() {
           }
       },
       debug: function (message) {
-          document.getElementById("debug-message").innerHTML = message;
+          $("#debug-message").html(message);
       },
       getTimeStamp: function () {
           return new Date().getTime();
@@ -17,7 +17,7 @@ window.onload = function() {
           fov = typeof fov !== 'undefined' ? fov : 90;
           heading = typeof heading !== 'undefined' ? heading : 0;
           pitch = typeof pitch !== 'undefined' ? pitch : 0;
-          document.getElementById("streetview").innerHTML = "<img src='http://maps.googleapis.com/maps/api/streetview?size=640x640&location="+ latitude + ",%20" + longitude + "&fov=" + fov + "&heading=" + heading + "&pitch=" + pitch + "&sensor=true'>";
+          $("#streetview").html("<img src='http://maps.googleapis.com/maps/api/streetview?size=640x640&location="+ latitude + ",%20" + longitude + "&fov=" + fov + "&heading=" + heading + "&pitch=" + pitch + "&sensor=true'>");
       },
       update: function (position) {
           position = position.coords;
