@@ -42,7 +42,7 @@ window.onload = function() {
               $(image).data("loaded", true);
               Periskop.showLatestImage();
           };
-          image.src = "http://maps.googleapis.com/maps/api/streetview?size=640x640&location="+ latitude + ",%20" + longitude + "&fov=" + fov + "&heading=" + heading + "&pitch=" + pitch + "&sensor=true";
+          image.src = "http://maps.googleapis.com/maps/api/streetview?size=640x640&location="+ latitude + ",%20" + longitude + "&fov=" + fov + "&heading=" + heading + "&pitch=" + pitch + "&sensor=true&amp;key=AIzaSyB2UK5VXTKYM06E6J_EJ0KomAACL1_XAjs";
       },
       scaleImage: function (image) {
           if (!image && $("#streetview").children().size()) {
